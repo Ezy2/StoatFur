@@ -1,0 +1,49 @@
+StoatFur License
+Copyright (c) 2026 Ezy2
+
+By using, copying, or incorporating this code (the "Software") into your own application or bot, you agree to the terms of this license.
+
+You CAN
+  - Use the Software as a dependency to create your own applications and bots.
+  - Make your applications and bots public.
+  - Use the Software in commercial applications and bots.
+  - Monetize applications and bots made using the Software, including through subscriptions, premium features, donations, advertisements, or other forms of revenue.
+
+You MUST
+  - Give reasonably visible credit to Ezy or Ezy2 when publicly distributing or operating an application or bot that uses the Software.
+  - Include a link to the original repository: https://github.com/Ezy2/StoatFur
+
+You CANNOT
+  - Sell the Software or its source code as a standalone product.
+  - Redistribute, publish, sublicense, or otherwise share the Software itself.
+  - Redistribute, publish, sublicense, or otherwise share modified or adapted versions of the Software.
+  - Claim the Software or its source code as your own.
+  - Remove or obscure the required attribution.
+
+Commercial Use
+
+Commercial use of applications and bots built using this Software is permitted.
+
+This includes, but is not limited to, subscriptions, premium features, donations, advertisements, paid services, and other forms of monetization.
+
+This permission does not grant permission to sell, redistribute, sublicense, or commercially exploit the Software itself.
+
+Redistribution
+
+The Software itself may not be redistributed, resold, sublicensed, published, or otherwise shared, whether in its original form or in a modified or adapted form.
+
+Using the Software as a dependency in your own application or bot does not constitute redistribution of the Software, provided that the Software itself is not made available to others in violation of this license.
+
+Attribution
+
+The required attribution may be provided in any reasonable location appropriate to the application or bot, such as an about page, credits page, documentation, bot information page, website footer, or similar location.
+
+The attribution must identify Ezy or Ezy2 and include a link to:
+
+https://github.com/Ezy2/StoatFur
+
+No Additional Rights
+
+Except for the permissions expressly granted by this license, all rights to the Software remain with the copyright holder.
+
+By using the Software, you agree to comply with all terms of this license.
