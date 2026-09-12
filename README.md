@@ -15,7 +15,9 @@ This is not a part of stoat this is unofficial
 
 Most of it was written by me using the docs https://developers.stoat.chat/api-reference
 
-yes this is probably broken i havent made it precompiled for everything
+yes this is probably broken i havent made it precompiled for anything
+
+using the CMakeLists.txt in the library/cmake/CMakeLists.txt you can compile by doing cmake build . and cmake --build . in the cmake directory
 
 ## requirements
 
