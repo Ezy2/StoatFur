@@ -1,3 +1,5 @@
+// dis is what ive been using for testing stuffz
+
 #include <fstream>
 
 #include "stoatFur.h"
@@ -20,6 +22,13 @@ int main() {
             std::cout << "new message content: " << event.message.content << '\n';
         }
         if (event.type == "Message") {
+            for (auto const & role : event.author.roles) {
+                std::cout << "Role ID: " << role << '\n';
+                RequestsAPI::getRole(event.message.serverID, role, [](Event info) {
+                    std::cout << info.role.seperate << '\n';
+                });
+            }
+
             if (!event.author.isBot && event.message.content == "badword") {
                 RequestsAPI::sendMessage(event.message.channelID, "Your message has been removed");
                 RequestsAPI::getMessage(event.message.channelID, event.message.messageID, [event](Event info) {
@@ -48,7 +57,7 @@ int main() {
                         std::cout << info.emoji.name << '\n';
                         std::cout << info.emoji.ID << '\n';
                     });
-                } else if (event.message.command == "MessageReact") {
+                } else if (event.message.command == "addreaction") {
                     RequestsAPI::addReaction(event.message.channelID, event.message.messageID, "01M26H53FA63X6M8F6Y0KE5S3M");
                 }
                 // if (event.message.arguments.size() > 0) { // just kept annoying me

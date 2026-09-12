@@ -54,6 +54,11 @@ namespace RequestsAPI {
         if (!isInitialized()) return;
         requestsObject->addReaction(channelID, messageID, emojiID);
     }
+
+    void getRole(std::string const & serverID, std::string const & roleID, messageCallback callback) {
+        if (!isInitialized()) return;
+        requestsObject->getRole(serverID, roleID, std::move(callback));
+    }
 }
 
 void StoatApi::sendMessage(const std::string channelID, const std::string content) {
@@ -84,8 +89,8 @@ void StoatApi::getMessage(std::string const & channelID, std::string const & mes
     request(http::verb::get, "/channels/" + channelID + "/messages/" + messageID, {}, [callback = std::move(callback)](auto const & response) mutable {
         Event event;
         event.rawData = json::parse(response.body()).dump(4);
-        parseMessageData(json::parse(response.body()), event.message);
-        parseAuthorData(json::parse(response.body()), event.author);
+        parseMessageData(json::parse(response.body()), event.message, "getMessage");
+        parseAuthorData(json::parse(response.body()), event.author, "getMessage");
         callback(event);
     });
 }
@@ -94,9 +99,22 @@ void StoatApi::getEmoji(std::string const & emojiID, messageCallback callback) {
     request(http::verb::get, "/custom/emoji/" + emojiID, {}, [callback = std::move(callback)](responseCallback::argument_type const & response) mutable {
         Event event;
         event.rawData = json::parse(response.body()).dump(4);
-        parseMessageData(json::parse(response.body()), event.message);
-        parseAuthorData(json::parse(response.body()), event.author);
+        parseMessageData(json::parse(response.body()), event.message, "getEmoji");
+        parseAuthorData(json::parse(response.body()), event.author, "getEmoji");
         parseEmojiData(json::parse(response.body()), event.emoji);
+        parseRoleData(json::parse(response.body()), event.role);
+        callback(event);
+    });
+}
+
+void StoatApi::getRole(std::string const & serverID, std::string const & roleID, messageCallback callback) {
+    request(http::verb::get, "/servers/" + serverID + "/roles/" + roleID, {}, [callback = std::move(callback)](responseCallback::argument_type const & response) mutable {
+        Event event;
+        event.rawData = json::parse(response.body()).dump(4);
+        parseMessageData(json::parse(response.body()), event.message, "getEmoji");
+        parseAuthorData(json::parse(response.body()), event.author, "getEmoji");
+        parseEmojiData(json::parse(response.body()), event.emoji);
+        parseRoleData(json::parse(response.body()), event.role);
         callback(event);
     });
 }

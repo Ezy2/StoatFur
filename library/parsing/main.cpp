@@ -2,13 +2,12 @@
 #include "../events/events.h"
 #include "../../stoatFur.h"
 
-void parseMessageData(json messageData, MessageInfo & info) {
+void parseMessageData(json messageData, MessageInfo & info, std::string type) {
     info.content = messageData.value("content", "");
     info.messageID = messageData.value("_id", "");
     info.nonce = messageData.value("nonce", "");
     info.isCommand = (info.content[0] == prefix);
     info.channelID = messageData.value("channel", "");
-
 
     if (info.messageID == "") info.messageID = messageData.value("id", "");
 
@@ -26,7 +25,7 @@ void parseMessageData(json messageData, MessageInfo & info) {
 
     info.isBot = false;
 
-    if (messageData.contains("user")) { // mahbee decapritated? its all under author now
+    if (messageData.contains("user") && (type != "ChannelStartTyping" && type != "ChannelStopTyping")) { // mahbee decapritated? its all under author now
         info.authorDiscriminator = messageData["user"].value("discriminator", "");
         info.authorDisplayName = messageData["user"].value("display_name", "");
         info.relationship = messageData["user"].value("relationship", "");
@@ -49,17 +48,16 @@ void parseMessageData(json messageData, MessageInfo & info) {
         info.arguments.erase(info.arguments.begin());
     }
 
-    if (messageData.contains("replies")) {
-        info.replies = messageData.value("replies", json::array());
-    }
+    info.replies = messageData.value("replies", json::array());
 }
 
-void parseAuthorData(json authorData, Author & info) {
+void parseAuthorData(json authorData, Author & info, std::string type) {
     if (authorData.contains("member")) {
         info.joinedDateRaw = authorData["member"].value("joined_at", "");
+        info.roles = authorData["member"].value("roles", json::array());
     }
 
-    if (authorData.contains("user")) {
+    if (authorData.contains("user") && (type != "ChannelStartTyping" && type != "ChannelStopTyping")) {
         info.authorDiscriminator = authorData["user"].value("discriminator", "");
         info.authorDisplayName = authorData["user"].value("display_name", "");
         info.relationship = authorData["user"].value("relationship", "");
@@ -77,6 +75,43 @@ void parseAuthorData(json authorData, Author & info) {
     }
 }
 
+void parseReactedData(json reactedData, Emoji & info, std::string type) {
+    info.channelID = reactedData.value("channel_id", "");
+    info.ID = reactedData.value("emoji_id", "");
+    info.messageID = reactedData.value("id", "");
+    info.type = reactedData.value("type", "");
+    info.userID = reactedData.value("user_id", "");
+}
+
+// these are get requests ones hence no "type"
+
+void parseRoleData(json roleData, Role & info) {
+    info.ID = roleData.value("_id", "");
+    info.colour = roleData.value("colour", "");
+    info.seperate = roleData.value("hoist", false);
+    info.name = roleData.value("name", "");
+    info.rank = roleData.value("rank", 0);
+
+    if (roleData.contains("permissions")) {
+        info.allowed = roleData["permissions"].value("a", 0);
+        info.disallowed = roleData["permissions"].value("d", 0);
+    }
+
+    if (roleData.contains("icon")) {
+        info.iconID = roleData["icon"].value("_id", "");
+        info.tag = roleData["icon"].value("tag", "");
+        info.filename = roleData["icon"].value("filename", "");
+        info.contentType = roleData["icon"].value("content_type", "");
+        info.size = roleData["icon"].value("size", 0);
+        info.deleted = roleData["icon"].value("deleted", false);
+        info.reported = roleData["icon"].value("reported", false);
+        info.messageID = roleData["icon"].value("message_id", "");
+        info.userID = roleData["icon"].value("user_id", "");
+        info.serverID = roleData["icon"].value("server_id", "");
+        info.objectID = roleData["icon"].value("object_id", "");
+    }
+}
+
 void parseEmojiData(json emojiData, Emoji & info) {
     info.ID = emojiData.value("_id", "");
     info.isAnimated = emojiData.value("animated", false);
@@ -87,12 +122,4 @@ void parseEmojiData(json emojiData, Emoji & info) {
         info.parentID = emojiData["parent"].value("id", "");
         info.type = emojiData["parent"].value("type", "");
     }
-}
-
-void parseReactedData(json reactedData, Emoji & info) {
-    info.channelID = reactedData.value("channel_id", "");
-    info.ID = reactedData.value("emoji_id", "");
-    info.messageID = reactedData.value("id", "");
-    info.type = reactedData.value("type", "");
-    info.userID = reactedData.value("user_id", "");
 }

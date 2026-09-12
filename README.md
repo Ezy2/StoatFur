@@ -5,11 +5,15 @@ i had to rewrite it 3: took forever
 
 stoatfur was made by me ("Ezy")
 
-its a C++ bot library for stoat.chat
+its a C++ bot library for stoat.chat even though several already exists
 
 its a little project i am working on by no means is it good but yea
 
 This is not a part of stoat this is unofficial
+
+## why you should choose it?
+
+i dont think u should its very unprofessional and its my first time making something like this
 
 ## some warnings
 
@@ -69,7 +73,7 @@ see the "LICENSE" file for the full license terms.
   - std::string command;
   - std::string pronouns;
   - std::string edited;
-  - std::string embeds; ?? (does nothing)
+  - std::string embeds; ?? (does nothing yet)
 
   - bool isBot;
   - bool isCommand;
@@ -91,6 +95,8 @@ see the "LICENSE" file for the full license terms.
   - bool isBot;
   - bool userOnline;
 
+  - std::vector<std::string> roles;
+
 #### Emoji:
   - std::string ID;
   - std::string creatorID;
@@ -102,6 +108,28 @@ see the "LICENSE" file for the full license terms.
   - std::String messageID;
 
   - bool isAnimated;
+
+#### Role:
+  - std::string ID;
+  - std::string name;
+  - std::string colour;
+  - std::string iconID;
+  - std::string tag;
+  - std::string filename;
+  - std::string contentType;
+  - std::string messageID;
+  - std::string userID;
+  - std::string serverID;
+  - std::string objectID;
+
+  - int size;
+  - std::int64_t rank;
+  - std::int64_t allowed;
+  - std::int64_t disallowed;
+
+  - bool seperate;
+  - bool deleted;
+  - bool reported;
 
 #### Event:
   - MessageInfo message;
@@ -160,7 +188,8 @@ if (event.message.isCommand) { // checks if the message you've recieved (in setE
   - addReaction(channelID, messageID, emojiID) // string, string, string
 
   - getMessage(channelID, messageID, [](Event varName) {}) // string, string, callback lambda
-  - getEmoji(emojiID, [](Event varName) {})                // string, string, callback lambda
+  - getRole(serverID, roleID, [](Event varName) {})        // string, string callback lambda
+  - getEmoji(emojiID, [](Event varName) {})                // string, callback lambda
 
 ### Examples
 
@@ -182,12 +211,15 @@ RequestsAPI::getEmoji("01M26H53FA63X6M8F6Y0KE5S3M", [event](Event info) { // get
 
 ## Events
 
-#### Events:
+#### Supported Events:
   - MessageReact
   - Message
   - MessageUnreact
   - MessageDelete
   - MessageUpdate
+
+#### All Events:
+  - pfff i dunno :p
 
 get them by doing varName.type;
 
@@ -211,8 +243,7 @@ https://github.com/Ezy2/StoatFur/blob/main/example.cpp
 
 ## interactions
 
-emojis/reactions
-creating/getting/deleting a role
+creating/getting/deleting a role  w.i.p
 set role(s) permissions
 edit roles
 voice chat stuff?

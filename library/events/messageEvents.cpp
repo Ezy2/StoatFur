@@ -23,9 +23,9 @@ void MessageEvents::run() {
 void MessageEvents::onMessage(json messageData, std::string type) {
     Event event;
 
-    parseMessageData(messageData, event.message);
-    parseAuthorData(messageData, event.author);
-    parseReactedData(messageData, event.emoji);
+    parseMessageData(messageData, event.message, type);
+    parseAuthorData(messageData, event.author, type);
+    parseReactedData(messageData, event.emoji, type);
 
     event.rawData = messageData.dump(4);
     event.type = type;

@@ -31,13 +31,15 @@ void StoatSession::handleEvent(const json & data) {
         return;
     }
 
-    if (type == "Message" || type == "MessageReact" || type == "MessageUnreact" || type == "MessageDelete" || type == "MessageUpdate") {
+    if (type != "ChannelStopTyping" && type != "ChannelStartTyping") {
         messageEventsObject.onMessage(data, type);
-        std::cout << data.dump(4) << '\n';
-        return;
+        // std::cout << data.dump(4) << '\n';
+    } else if (type == "ChannelStopTyping" || type == "ChannelStartTyping") {
+        messageEventsObject.onMessage(data, type);
     }
 
-    std::cout << "event: " << type << '\n';
+    // std::cout << "event: " << type << '\n';
+    // std::cout << data.dump(4) << '\n';
 }
 
 bool isCommand(std::string & string) {
