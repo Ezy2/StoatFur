@@ -21,6 +21,8 @@ namespace RequestsAPI {
     void getMessage(std::string const & channelID, std::string const & messageID, messageCallback callback);
     void getEmoji(std::string const & emojiID, messageCallback callback);
     void getRole(std::string const & serverID, std::string const & roleID, messageCallback callback);
+    void addRole(const std::string serverID, const std::string memberID, std::string const roleID);
+    void getUser(std::string const & serverID, std::string const & userID, messageCallback callback);
 }
 
 namespace asio = boost::asio;
@@ -42,6 +44,8 @@ void getMessage(std::string const & channelID, std::string const & messageID, me
 void addReaction(std::string const & channelID, std::string const & messageID, std::string const & emojiID);
 void getEmoji(std::string const & emojiID, messageCallback callback);
 void getRole(std::string const & serverID, std::string const & roleID, messageCallback callback);
+void addRole(const std::string serverID, const std::string memberID, std::string const roleID);
+void getUser(std::string const & serverID, std::string const & userID, messageCallback callback);
 
 private:
     asio::any_io_executor executor_;

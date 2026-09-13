@@ -49,9 +49,29 @@ struct Author {
     std::string authorUsername = "";
     std::string relationship = "";
     std::string joinedDateRaw = "";
+    std::string ID = "";
+    std::string name = "";
+    std::string colour = "";
+    std::string iconID = "";
+    std::string tag = "";
+    std::string filename = "";
+    std::string contentType = "";
+    std::string messageID = "";
+    std::string userID = "";
+    std::string serverID = "";
+    std::string objectID = "";
+    std::string nickname = "";
 
-    bool isBot = false;
+    int size = 0;
+    std::int64_t rank = 0;
+    std::int64_t allowed = 0;
+    std::int64_t disallowed = 0;
+
+    bool seperate = false;
+    bool deleted = false;
+    bool reported = false;
     bool userOnline = false;
+    bool isBot = false;
 
     std::vector<std::string> roles;
 };

@@ -16,18 +16,29 @@ int main() {
 
     prefix = '!';
     std::string lastPinID = "";
+    std::string emojiID = "01M26H53FA63X6M8F6Y0KE5S3M";
+    std::string roleID = "01M2C4A5N3BZY1XCC9GRFNN9RZ";
 
-    MessageEventsAPI::setEventListener([lastPinID](Event event) mutable {
+    MessageEventsAPI::setEventListener([&](Event event) mutable {
         if (event.type == "MessageUpdate") {
             std::cout << "new message content: " << event.message.content << '\n';
         }
+
         if (event.type == "Message") {
             for (auto const & role : event.author.roles) {
                 std::cout << "Role ID: " << role << '\n';
                 RequestsAPI::getRole(event.message.serverID, role, [](Event info) {
-                    std::cout << info.role.seperate << '\n';
+                    // std::cout << info.role.seperate << '\n';
                 });
             }
+
+            std::cout << event.author.nickname << "B" << '\n';
+
+            RequestsAPI::getUser(event.message.serverID, event.message.authorID, [](Event info) {
+                for (auto const & role : info.author.roles) {
+                    std::cout << role << '\n';
+                }
+            });
 
             if (!event.author.isBot && event.message.content == "badword") {
                 RequestsAPI::sendMessage(event.message.channelID, "Your message has been removed");
@@ -53,12 +64,15 @@ int main() {
                 } else if (event.message.command == "getemoji" && event.message.arguments.size() > 0) {
                     std::cout << event.message.arguments[0].argument << '\n';
                     RequestsAPI::sendMessage(event.message.channelID, event.message.arguments[0].argument);
-                    RequestsAPI::getEmoji("01M26H53FA63X6M8F6Y0KE5S3M", [event](Event info) {
+                    RequestsAPI::getEmoji(emojiID, [event](Event info) {
                         std::cout << info.emoji.name << '\n';
                         std::cout << info.emoji.ID << '\n';
                     });
                 } else if (event.message.command == "addreaction") {
-                    RequestsAPI::addReaction(event.message.channelID, event.message.messageID, "01M26H53FA63X6M8F6Y0KE5S3M");
+                    RequestsAPI::addReaction(event.message.channelID, event.message.messageID, emojiID);
+                } else if (event.message.command == "giverole") {
+                    std::cout << event.message.serverID << event.message.authorID << '\n';
+                    RequestsAPI::addRole(event.message.serverID, event.message.authorID, roleID);
                 }
                 // if (event.message.arguments.size() > 0) { // just kept annoying me
                 //     std::cout << "argument 1 bool?: " << event.message.arguments[0].isBool() << '\n';

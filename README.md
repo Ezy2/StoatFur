@@ -27,7 +27,7 @@ using the CMakeLists.txt in the library/cmake/CMakeLists.txt you can compile by 
 
 C++ 17 or newer
 
-g++
+a cmake compatible cpp compiler like g++
 
 cmake 3.15 or newer
 
@@ -41,7 +41,7 @@ OpenSSL
 
 nlohmann/json
 
-this was originally tested on archlinux (i use arch btw :3) using zed editor and kde plasma
+this was originally tested on archlinux (i use arch btw :3) using zed editor and kde plasma using
 
 ## contact me
 
@@ -56,6 +56,8 @@ see the "LICENSE" file for the full license terms.
 # info
 
 ## Structs
+
+ill eventually have to rework these MAYBE if i feel like making it better cause you dont need authorID in messageInfo if its already in author but its fineee choices am i right?
 
 #### MessageInfo:
   - std::string content;
@@ -91,9 +93,29 @@ see the "LICENSE" file for the full license terms.
   - std::string authorUsername;
   - std::string relationship;
   - std::string joinedDateRaw;
+  - std::string ID = "";
+  - std::string name = "";
+  - std::string colour = "";
+  - std::string iconID = "";
+  - std::string tag = "";
+  - std::string filename = "";
+  - std::string contentType = "";
+  - std::string messageID = "";
+  - std::string userID = "";
+  - std::string serverID = "";
+  - std::string objectID = "";
+  - std::string nickname = "";
 
-  - bool isBot;
-  - bool userOnline;
+  - int size = 0;
+  - std::int64_t rank = 0;
+  - std::int64_t allowed = 0;
+  - std::int64_t disallowed = 0;
+
+  - bool seperate = false;
+  - bool deleted = false;
+  - bool reported = false;
+  - bool userOnline = false;
+  - bool isBot = false;
 
   - std::vector<std::string> roles;
 
@@ -146,7 +168,7 @@ you can get them by calling them like
 
 varName.message.content;
 varName.author.isBot;
-varName.message.arguments[0].argument;
+varName.message.arguments[0].argument; // you have to use [int] for the vectors obviously
 varName.message.arguments[0].isBool();
 varName.rawData;
 
@@ -184,11 +206,13 @@ if (event.message.isCommand) { // checks if the message you've recieved (in setE
   - deleteMessage(channelID, messageID)  // string, string
   - pinMessage(channelID, messageID)     // string, string
   - unpinMessage(channelID, messageID)   // string, string
+  - addRole(serverID, roleID)            // string, string (note: this is a w.i.p. and will override all other roles and replace them with the one)
 
   - addReaction(channelID, messageID, emojiID) // string, string, string
 
   - getMessage(channelID, messageID, [](Event varName) {}) // string, string, callback lambda
   - getRole(serverID, roleID, [](Event varName) {})        // string, string callback lambda
+  - getUser(serverID, userID, [](Event varName) {})                // string, string, callback lambda
   - getEmoji(emojiID, [](Event varName) {})                // string, callback lambda
 
 ### Examples
@@ -243,9 +267,10 @@ https://github.com/Ezy2/StoatFur/blob/main/example.cpp
 
 ## interactions
 
-creating/getting/deleting a role  w.i.p
-set role(s) permissions
-edit roles
-voice chat stuff?
+creating/getting/deleting a role \[w.i.p\]
+
+give/remove roles
+
 banning/kicking
+
 embeds

@@ -59,6 +59,16 @@ namespace RequestsAPI {
         if (!isInitialized()) return;
         requestsObject->getRole(serverID, roleID, std::move(callback));
     }
+
+    void addRole(const std::string serverID, const std::string memberID, std::string const roleID) {
+        if (!isInitialized()) return;
+        requestsObject->addRole(serverID, memberID, roleID);
+    }
+
+    void getUser(std::string const & serverID, std::string const & userID, messageCallback callback) {
+        if (!isInitialized()) return;
+        requestsObject->getUser(serverID, userID, std::move(callback));
+    }
 }
 
 void StoatApi::sendMessage(const std::string channelID, const std::string content) {
@@ -67,6 +77,19 @@ void StoatApi::sendMessage(const std::string channelID, const std::string conten
     };
 
     request(http::verb::post, "/channels/" + channelID + "/messages", body.dump());
+}
+
+void StoatApi::addRole(const std::string serverID, const std::string memberID, std::string const roleID) {
+    json body;
+    std::vector<std::string> roles = {
+        roleID
+    };
+
+    body["roles"] = roles;
+
+    std::cout << body.dump(4) << '\n';
+
+    request(http::verb::patch, "/servers/" + serverID + "/members/" + memberID, body.dump());
 }
 
 void StoatApi::deleteMessage(std::string const & channelID, std::string const & messageID) {
@@ -109,6 +132,18 @@ void StoatApi::getEmoji(std::string const & emojiID, messageCallback callback) {
 
 void StoatApi::getRole(std::string const & serverID, std::string const & roleID, messageCallback callback) {
     request(http::verb::get, "/servers/" + serverID + "/roles/" + roleID, {}, [callback = std::move(callback)](responseCallback::argument_type const & response) mutable {
+        Event event;
+        event.rawData = json::parse(response.body()).dump(4);
+        parseMessageData(json::parse(response.body()), event.message, "getEmoji");
+        parseAuthorData(json::parse(response.body()), event.author, "getEmoji");
+        parseEmojiData(json::parse(response.body()), event.emoji);
+        parseRoleData(json::parse(response.body()), event.role);
+        callback(event);
+    });
+}
+
+void StoatApi::getUser(std::string const & serverID, std::string const & userID, messageCallback callback) {
+    request(http::verb::get, "/servers/" + serverID + "/members/" + userID, {}, [callback = std::move(callback)](responseCallback::argument_type const & response) mutable {
         Event event;
         event.rawData = json::parse(response.body()).dump(4);
         parseMessageData(json::parse(response.body()), event.message, "getEmoji");

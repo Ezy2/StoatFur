@@ -4,9 +4,8 @@
 
 void parseMessageData(json messageData, MessageInfo & info, std::string type) {
     info.content = messageData.value("content", "");
-    info.messageID = messageData.value("_id", "");
     info.nonce = messageData.value("nonce", "");
-    info.isCommand = (info.content[0] == prefix);
+    info.isCommand = !info.content.empty() && info.content[0] == prefix;
     info.channelID = messageData.value("channel", "");
 
     if (info.messageID == "") info.messageID = messageData.value("id", "");
@@ -38,40 +37,79 @@ void parseMessageData(json messageData, MessageInfo & info, std::string type) {
         info.isBot = true;
         info.botOwner = messageData["user"]["bot"].value("owner", "");
     }
+    if (messageData["_id"].is_string()) {
+        info.messageID = messageData["_id"].get<std::string>();
+    }
 
     info.arguments = {};
     info.replies = {};
 
     if (info.isCommand) {
         getArguments(info.arguments, info.content);
-        info.command = info.arguments[0].argument.substr(1);
-        info.arguments.erase(info.arguments.begin());
+        if (!info.arguments.empty()) {
+            info.arguments.erase(info.arguments.begin());
+            info.command = info.arguments[0].argument.substr(1);
+        }
     }
 
     info.replies = messageData.value("replies", json::array());
 }
 
 void parseAuthorData(json authorData, Author & info, std::string type) {
-    if (authorData.contains("member")) {
-        info.joinedDateRaw = authorData["member"].value("joined_at", "");
-        info.roles = authorData["member"].value("roles", json::array());
+    info.isBot = false;
+
+    if (authorData.contains("_id") && authorData["_id"].is_object()) {
+        info.authorID = authorData["_id"].value("user", "");
+        info.serverID = authorData["_id"].value("server", "");
     }
 
-    if (authorData.contains("user") && (type != "ChannelStartTyping" && type != "ChannelStopTyping")) {
+    info.roles = authorData.value("roles", json::array());
+
+    if (authorData.contains("member")) {
+        info.joinedDateRaw = authorData["member"].value("joined_at", "");
+        info.nickname = authorData["member"].value("nickname", "");
+        if (info.roles.size() <= 0) info.roles = authorData["member"].value("roles", json::array());
+    } else {
+        info.nickname = authorData.value("nickname", "");
+    }
+
+    if (authorData.contains("user") && authorData["user"].is_object() && type != "ChannelStartTyping" && type != "ChannelStopTyping") {
         info.authorDiscriminator = authorData["user"].value("discriminator", "");
         info.authorDisplayName = authorData["user"].value("display_name", "");
         info.relationship = authorData["user"].value("relationship", "");
         info.authorUsername = authorData["user"].value("username", "");
         info.userOnline = authorData["user"].value("online", false);
         info.pronouns = authorData["user"].value("pronouns", "");
-        info.authorID = authorData["user"].value("_id", "");
+
+        if (authorData["user"].contains("_id") && authorData["user"]["_id"].is_string()) {
+            info.authorID = authorData["user"]["_id"].get<std::string>();
+        }
+
+        if (authorData["user"].contains("bot") && authorData["user"]["bot"].is_object()) {
+            info.isBot = true;
+            info.botOwner = authorData["user"]["bot"].value("owner", "");
+        }
     }
 
-    info.isBot = false;
+    if (authorData.contains("avatar") && authorData["avatar"].is_object()) {
+        info.iconID = authorData["avatar"].value("_id", "");
+        info.tag = authorData["avatar"].value("tag", "");
+        info.filename = authorData["avatar"].value("filename", "");
+        info.contentType = authorData["avatar"].value("content_type", "");
+        info.size = authorData["avatar"].value("size", 0);
+        info.deleted = authorData["avatar"].value("deleted", false);
+        info.reported = authorData["avatar"].value("reported", false);
+        info.messageID = authorData["avatar"].value("message_id", "");
+        info.userID = authorData["avatar"].value("user_id", "");
+        info.serverID = authorData["avatar"].value("server_id", "");
+        info.objectID = authorData["avatar"].value("object_id", "");
+    }
 
-    if (authorData["user"].contains("bot")) {
-        info.isBot = true;
-        info.botOwner = authorData["user"]["bot"].value("owner", "");
+    if (info.pronouns.empty()) {
+        info.pronouns = authorData.value("pronouns", "");
+    }
+    if (info.joinedDateRaw.empty()) {
+        info.joinedDateRaw = authorData.value("joined_at", "");
     }
 }
 
@@ -86,7 +124,6 @@ void parseReactedData(json reactedData, Emoji & info, std::string type) {
 // these are get requests ones hence no "type"
 
 void parseRoleData(json roleData, Role & info) {
-    info.ID = roleData.value("_id", "");
     info.colour = roleData.value("colour", "");
     info.seperate = roleData.value("hoist", false);
     info.name = roleData.value("name", "");
@@ -110,10 +147,12 @@ void parseRoleData(json roleData, Role & info) {
         info.serverID = roleData["icon"].value("server_id", "");
         info.objectID = roleData["icon"].value("object_id", "");
     }
+    if (roleData["_id"].is_string()) {
+        info.ID = roleData["_id"].get<std::string>();
+    }
 }
 
 void parseEmojiData(json emojiData, Emoji & info) {
-    info.ID = emojiData.value("_id", "");
     info.isAnimated = emojiData.value("animated", false);
     info.creatorID = emojiData.value("creator_id", "");
     info.name = emojiData.value("name", "");
@@ -121,5 +160,8 @@ void parseEmojiData(json emojiData, Emoji & info) {
     if (emojiData.contains("parent")) {
         info.parentID = emojiData["parent"].value("id", "");
         info.type = emojiData["parent"].value("type", "");
+    }
+    if (emojiData["_id"].is_string()) {
+        info.ID = emojiData["_id"].get<std::string>();
     }
 }
