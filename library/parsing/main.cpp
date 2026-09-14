@@ -47,8 +47,8 @@ void parseMessageData(json messageData, MessageInfo & info, std::string type) {
     if (info.isCommand) {
         getArguments(info.arguments, info.content);
         if (!info.arguments.empty()) {
-            info.arguments.erase(info.arguments.begin());
             info.command = info.arguments[0].argument.substr(1);
+            info.arguments.erase(info.arguments.begin());
         }
     }
 

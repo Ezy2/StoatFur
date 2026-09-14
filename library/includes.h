@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 namespace asio = boost::asio;
 namespace ssl = boost::asio::ssl;

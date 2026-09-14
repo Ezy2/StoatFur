@@ -26,17 +26,17 @@ int main() {
 
         if (event.type == "Message") {
             for (auto const & role : event.author.roles) {
-                std::cout << "Role ID: " << role << '\n';
+                // std::cout << "Role ID: " << role << '\n';
                 RequestsAPI::getRole(event.message.serverID, role, [](Event info) {
                     // std::cout << info.role.seperate << '\n';
                 });
             }
 
-            std::cout << event.author.nickname << "B" << '\n';
+            // std::cout << event.author.nickname << "B" << '\n';
 
             RequestsAPI::getUser(event.message.serverID, event.message.authorID, [](Event info) {
                 for (auto const & role : info.author.roles) {
-                    std::cout << role << '\n';
+                    // std::cout << role << '\n';
                 }
             });
 
@@ -71,7 +71,6 @@ int main() {
                 } else if (event.message.command == "addreaction") {
                     RequestsAPI::addReaction(event.message.channelID, event.message.messageID, emojiID);
                 } else if (event.message.command == "giverole") {
-                    std::cout << event.message.serverID << event.message.authorID << '\n';
                     RequestsAPI::addRole(event.message.serverID, event.message.authorID, roleID);
                 }
                 // if (event.message.arguments.size() > 0) { // just kept annoying me

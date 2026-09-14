@@ -206,7 +206,7 @@ if (event.message.isCommand) { // checks if the message you've recieved (in setE
   - deleteMessage(channelID, messageID)  // string, string
   - pinMessage(channelID, messageID)     // string, string
   - unpinMessage(channelID, messageID)   // string, string
-  - addRole(serverID, roleID)            // string, string (note: this is a w.i.p. and will override all other roles and replace them with the one)
+  - addRole(serverID, roleID)            // string, string (note: this is a w.i.p. and might break unsure)
 
   - addReaction(channelID, messageID, emojiID) // string, string, string
 

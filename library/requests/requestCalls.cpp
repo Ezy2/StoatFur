@@ -79,18 +79,22 @@ void StoatApi::sendMessage(const std::string channelID, const std::string conten
     request(http::verb::post, "/channels/" + channelID + "/messages", body.dump());
 }
 
-void StoatApi::addRole(const std::string serverID, const std::string memberID, std::string const roleID) {
-    json body;
-    std::vector<std::string> roles = {
-        roleID
-    };
-
-    body["roles"] = roles;
-
-    std::cout << body.dump(4) << '\n';
-
-    request(http::verb::patch, "/servers/" + serverID + "/members/" + memberID, body.dump());
+void StoatApi::addRole(const std::string serverID, const std::string memberID, const std::string roleID) {
+    getUser(serverID, memberID, [this, serverID, memberID, roleID](Event info) {
+        std::vector<std::string> roles;
+        roles.push_back(roleID);
+        for (const auto& role : info.author.roles) {
+            if (role == roleID) continue;
+            roles.push_back(role);
+        }
+        json body = {
+            {"roles", roles}
+        };
+        request(http::verb::patch, "/servers/" + serverID + "/members/" + memberID, body.dump()
+        );
+    });
 }
+
 
 void StoatApi::deleteMessage(std::string const & channelID, std::string const & messageID) {
     request(http::verb::delete_, "/channels/" + channelID + "/messages/" + messageID);
