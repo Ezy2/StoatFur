@@ -3,6 +3,7 @@
 
 void StoatSession::handleEvent(const json & data) {
     std::string type = data.value("type", "");
+    std::cout << "event: " << type << '\n';
 
     if (type == "Authenticated") {
         authenticated = true;
@@ -38,7 +39,6 @@ void StoatSession::handleEvent(const json & data) {
         messageEventsObject.onMessage(data, type);
     }
 
-    // std::cout << "event: " << type << '\n';
     // std::cout << data.dump(4) << '\n';
 }
 

@@ -235,17 +235,50 @@ RequestsAPI::getEmoji("01M26H53FA63X6M8F6Y0KE5S3M", [event](Event info) { // get
 
 ## Events
 
-#### Supported Events:
+#### Supported Events: [ones ive tested]
   - MessageReact
   - Message
   - MessageUnreact
   - MessageDelete
   - MessageUpdate
 
-#### All Events:
-  - pfff i dunno :p
+#### All Events: [ones i know exist but havent tested if parsing parses all the data]
+  - MessageReact
+  - Message
+  - MessageUnreact
+  - MessageDelete
+  - MessageUpdate
+  - ChannelStartTyping
+  - ChannelStopTyping
+  - ServerMemberUpdate
+  - Authenticated
+  - Ready
+  - Pong
+  - ServerRoleUpdate
+  - EmojiCreate
+  - EmojiDelete
+  - ServerUpdate
+  - ChannelCreate
+  - ChannelDelete
+  - ChannelUpdate
+  - WebhookCreate
+  - WebhookDelete
+  - ect. pfff i dunno :p
 
 get them by doing varName.type;
+
+So these events you can use any of them as Event passes all types (if it doesnt error)
+
+To do so u can get the raw data like
+```cpp
+MessageEventsAPI::setEventListener([lastPinID](Event event) mutable {
+    std::cout << event.rawData << '\n'; // already with 4 space indentions
+    if (event.type == "EmojiCreate") {
+        // here u can use any of the struct data it SHOULD parse all events (if they dont error)
+        std::cout << event.emoji.ID << '\n';
+    }
+}
+```
 
 ### Examples
 
