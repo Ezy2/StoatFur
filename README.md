@@ -1,5 +1,5 @@
 OH MAH GAWSH i overwrote my old readme!!! AHH
-i had to rewrite it 3: took forever
+i had to rewrite it 3: took forever (currently past where i was but i do hope it doestn get ruined again)
 
 # intro or what ever
 
@@ -17,7 +17,9 @@ i dont think u should its very unprofessional and its my first time making somet
 
 ## some warnings
 
-Most of it was written by me using the docs https://developers.stoat.chat/api-reference
+was made using the docs https://developers.stoat.chat/api-reference
+
+shoutout to whomever made them so clear to read :3
 
 yes this is probably broken i havent made it precompiled for anything
 
@@ -75,7 +77,7 @@ ill eventually have to rework these MAYBE if i feel like making it better cause 
   - std::string command;
   - std::string pronouns;
   - std::string edited;
-  - std::string embeds; ?? (does nothing yet)
+  - std::string embeds; ?? (does nothing yet) (side note: will probably be added to the Embed struct)
 
   - bool isBot;
   - bool isCommand;
@@ -161,6 +163,14 @@ ill eventually have to rework these MAYBE if i feel like making it better cause 
   - std::string rawData;
   - std::string type;
 
+#### Embed: (Not added to messaging events yet only sending)
+  - std::string colour;
+  - std::string description;
+  - std::string iconURL;
+  - std::string media;
+  - std::string title;
+  - std::string url;
+
 you can get them by calling them like
 
 ```cpp
@@ -202,13 +212,14 @@ if (event.message.isCommand) { // checks if the message you've recieved (in setE
   - setEventListener([](Event varName) {}) // callback lambda
 
 #### RequestsAPI:
-  - sendMessage(channelID, message)      // string, string
   - deleteMessage(channelID, messageID)  // string, string
   - pinMessage(channelID, messageID)     // string, string
   - unpinMessage(channelID, messageID)   // string, string
   - addRole(serverID, roleID)            // string, string (note: this is a w.i.p. and might break unsure)
 
   - addReaction(channelID, messageID, emojiID) // string, string, string
+  - 
+  - sendMessage(channelID, message, std::vector<Embed>)      // string, string, vector(optional)
 
   - getMessage(channelID, messageID, [](Event varName) {}) // string, string, callback lambda
   - getRole(serverID, roleID, [](Event varName) {})        // string, string callback lambda
@@ -231,6 +242,31 @@ RequestsAPI::getEmoji("01M26H53FA63X6M8F6Y0KE5S3M", [event](Event info) { // get
     std::cout << info.rawData << '\n';
 });
 
+```
+
+embed example
+
+```cpp
+MessageEventsAPI::setEventListener([&](Event event) mutable {
+        if (event.type == "Message") {
+            if (event.message.isCommand) {
+                if (event.message.command == "embedtests") {
+                    std::vector<Embed> embeds; // Embed should already be a declared struct
+
+                    Embed embed1;
+                    Embed embed2; // supports multiple embeds
+
+                    embed1.title = "embed1";
+                    embed1.color = "pink";
+
+                    embed2.title = "embed2 :3";
+                    embed2.description = "im a test embed!";
+                    
+                    RequestsAPI::sendMessage(event.message.channelID, "Testing Embeds", embeds); // just send the embed vector
+                }
+            }
+        }
+    });
 ```
 
 ## Events
@@ -298,11 +334,7 @@ https://github.com/Ezy2/StoatFur/blob/main/example.cpp
 
 # what i need to add
 
-## interactions
-
-creating/getting/deleting a role \[w.i.p\]
-
-give/remove roles
+give/remove roles \[works but if u cant do it more than liek 1 a second or else ull be rate limited\]
 
 banning/kicking
 

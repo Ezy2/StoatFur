@@ -3,7 +3,7 @@
 
 void StoatSession::handleEvent(const json & data) {
     std::string type = data.value("type", "");
-    std::cout << "event: " << type << '\n';
+    // std::cout << "event: " << type << '\n';
 
     if (type == "Authenticated") {
         authenticated = true;
@@ -32,7 +32,7 @@ void StoatSession::handleEvent(const json & data) {
         return;
     }
 
-    if (type != "ChannelStopTyping" && type != "ChannelStartTyping") {
+    if (type != "ChannelStopTyping" && type != "ChannelStartTyping" && type != "ServerMemberUpdate") {
         messageEventsObject.onMessage(data, type);
         // std::cout << data.dump(4) << '\n';
     } else if (type == "ChannelStopTyping" || type == "ChannelStartTyping") {

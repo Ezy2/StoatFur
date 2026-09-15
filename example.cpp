@@ -6,6 +6,24 @@
 
 std::string botToken = "botToken";
 
+void sendEmbeds(Event & event) {
+    std::vector<Embed> embeds;
+
+    Embed embed;
+    Embed embed2;
+
+    embed.colour = "pink";
+    embed.title = "test!";
+
+    embed2.colour = "red";
+    embed2.title = "test@";
+
+    embeds.push_back(embed);
+    embeds.push_back(embed2);
+
+    RequestsAPI::sendMessage(event.message.channelID, "Testing Embeds", embeds);
+}
+
 int main() {
     std::ifstream file("/home/Ezy/Documents/testing/secrets.txt"); // ur file to bot token can go here it reads the first line
     if (!file.is_open()) {
@@ -18,6 +36,11 @@ int main() {
     std::string lastPinID = "";
     std::string emojiID = "01M26H53FA63X6M8F6Y0KE5S3M";
     std::string roleID = "01M2C4A5N3BZY1XCC9GRFNN9RZ";
+
+    std::string redRole = "01M2GWQ6111RXBA7T6J2NHVZ06";
+    std::string pinkRole = "01M2GWQPE6S5HZQ11G8CA3DNA1";
+    std::string roleMessage = "01M2GWPJ625Z31QGFNPRP30DH9";
+    std::string serverID = "01M1ZRQGRWNR925WD85EJ6X7FK";
 
     MessageEventsAPI::setEventListener([&](Event event) mutable {
         if (event.type == "MessageUpdate") {
@@ -72,13 +95,31 @@ int main() {
                     RequestsAPI::addReaction(event.message.channelID, event.message.messageID, emojiID);
                 } else if (event.message.command == "giverole") {
                     RequestsAPI::addRole(event.message.serverID, event.message.authorID, roleID);
+                } else if (event.message.command == "removerole") {
+                    RequestsAPI::removeRole(event.message.serverID, event.message.authorID, roleID);
+                } else if (event.message.command == "embedtests") {
+                    sendEmbeds(event);
                 }
                 // if (event.message.arguments.size() > 0) { // just kept annoying me
                 //     std::cout << "argument 1 bool?: " << event.message.arguments[0].isBool() << '\n';
                 // }
             }
-        } else if (event.type == "MessageReact") {
-            std::cout << "Who reacted: " << event.emoji.userID << '\n';
+        } else if (event.type == "MessageReact") { // no clue how u get the serverid from this event
+            if (event.message.messageID == roleMessage) {
+                if (event.emoji.ID == "❤") {
+                    RequestsAPI::addRole(serverID, event.emoji.userID, redRole);
+                } else if (event.emoji.ID == "🩷") {
+                    RequestsAPI::addRole(serverID, event.emoji.userID, pinkRole);
+                }
+            }
+        } else if (event.type == "MessageUnreact") {
+            if (event.message.messageID == roleMessage) {
+                if (event.emoji.ID == "❤") {
+                    RequestsAPI::removeRole(serverID, event.emoji.userID, redRole);
+                } else if (event.emoji.ID == "🩷") {
+                    RequestsAPI::removeRole(serverID, event.emoji.userID, pinkRole);
+                }
+            }
         }
 
         for (auto const & reply : event.message.replies) {

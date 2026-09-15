@@ -11,9 +11,18 @@ namespace {
 using messageCallback = std::function<void(Event const &)>;
 using json = nlohmann::json;
 
+struct Embed {
+    std::string colour = "";
+    std::string description = "";
+    std::string iconURL = "";
+    std::string media = "";
+    std::string title = "";
+    std::string url = "";
+};
+
 namespace RequestsAPI {
     void initialize(asio::any_io_executor executor, ssl::context& context, std::string const& token);
-    void sendMessage(std::string const & channelID, std::string const & content);
+    void sendMessage(std::string const & channelID, std::string const & content, const std::vector<Embed> & embeds = {});
     void deleteMessage(std::string const & channelID, std::string const & messageID);
     void pinMessage(std::string const & channelID, std::string const & messageID);
     void unpinMessage(std::string const & channelID, std::string const & messageID);
@@ -23,6 +32,7 @@ namespace RequestsAPI {
     void getRole(std::string const & serverID, std::string const & roleID, messageCallback callback);
     void addRole(const std::string serverID, const std::string memberID, std::string const roleID);
     void getUser(std::string const & serverID, std::string const & userID, messageCallback callback);
+    void removeRole(const std::string serverID, const std::string memberID, std::string const roleID);
 }
 
 namespace asio = boost::asio;
@@ -36,7 +46,7 @@ using responseCallback = std::function<void(http::response<http::string_body> co
 struct StoatApi : public std::enable_shared_from_this<StoatApi> {
 StoatApi(asio::any_io_executor ex, ssl::context& context, std::string token);
 
-void sendMessage(std::string const channelID, std::string const content);
+void sendMessage(std::string const channelID, std::string const content, const std::vector<Embed> embeds = {});
 void deleteMessage(std::string const & channelID, std::string const & messageID);
 void pinMessage(std::string const & channelID, std::string const & messageID);
 void unpinMessage(std::string const & channelID, std::string const & messageID);
@@ -45,6 +55,7 @@ void addReaction(std::string const & channelID, std::string const & messageID, s
 void getEmoji(std::string const & emojiID, messageCallback callback);
 void getRole(std::string const & serverID, std::string const & roleID, messageCallback callback);
 void addRole(const std::string serverID, const std::string memberID, std::string const roleID);
+void removeRole(const std::string serverID, const std::string memberID, std::string const roleID);
 void getUser(std::string const & serverID, std::string const & userID, messageCallback callback);
 
 private:
@@ -91,3 +102,5 @@ private:
 
     void fail(beast::error_code errorCode, const char * what);
 };
+
+void parseAllData(std::string data, Event & event);
